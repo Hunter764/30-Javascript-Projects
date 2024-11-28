@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheather App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text"  placeholder="Enter city name" spellcheck="false">
+            <button ><img src="../Wheather App/images/searchIcon.png"></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name</p>
+        </div>
+        <div class="weather">
+            <img src="../Wheather App/images/cloud.png" class="wheather-icon">
+            <h1 class="temp">22°c</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="images/fog.png">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="../Wheather App/images/wind.png">
+                    <div>
+                        <p class="wind">15 km/hr</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        const apiKey = "fc79e351e788d712b75700fa4fbdf830";
+        const apiUrl ="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+        const searchBox = document.querySelector(".search input");  //to send information to the checkwheather function
+        const searchBtn = document.querySelector(".search button");
+        const weatherIcon = document.querySelector(".wheather-icon");
+
+        async function checkWheather(city){
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);  //To add Apikey we use backtick ``
+
+            if(response.status == 404){
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display ="none";
+            }else{
+                var data = await response.json(); //this data will have the all the information about the city in apiUrl
+
+            //Displaying data
+
+           
+
+            document.querySelector(".city").innerHTML = data.name; //to update the city name
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c"; //to update the temperature
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%"; //to update the humidity
+            document.querySelector(".wind").innerHTML = data.wind.speed + " Km/h"; //to update the wind speed
+
+            //Udating the image according to the weather
+            if(data.weather[0].main === "Clouds"){
+                weatherIcon.src = "images/cloud.png";
+            }
+            else if(data.weather[0].main =="Clear"){
+                weatherIcon.src = "images/clear.png";
+            }
+            else if(data.weather[0].main == "Rain"){
+                weatherIcon.src = "images/rain.png";
+            }
+            else if(data.weather[0].main == "Drizzle"){
+                weatherIcon.src = "images/Drizzle.png";
+            }
+            else if(data.weather[0].main =="Mist"){
+                weatherIcon.src = "images/Mist.png";
+            }
+            else if(data.weather[0].main =="snow"){
+                weatherIcon.src = "images/snow";
+            }
+
+            document.querySelector(".weather").style.display = "block";
+            document.querySelector(".error").style.display = "none";
+
+            
+            }
+
+            
+        }   
+
+        searchBtn.addEventListener("click",()=>{
+            checkWheather(searchBox.value);
+
+        })
+
+        checkWheather(); //calling the function
+
+    </script>
+</body>
+</html>
